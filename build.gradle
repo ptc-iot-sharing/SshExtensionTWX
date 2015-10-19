@@ -11,8 +11,8 @@ project.targetCompatibility = 1.8
 
 // set the properties accordingly
 project.ext {
-    extensionJar = "thingworx-sftp-extension.jar"
-    baseDir = '.'
+    extensionJar = "thingworx-ssh-extension.jar"
+    baseDir = projectDir
     common = 'common'
     uiDir = "${baseDir}/ui"
     libDir = "${baseDir}/lib"
@@ -23,8 +23,8 @@ project.ext {
     zipDir = "${baseDir}/zip"
     thingworxSdkDir = "${baseDir}/lib/common"
     packageVendor = "ThingWorx Customer Service"
-    packageName = "MailExampleExtension"
-    packageTitle = "MailExampleExtension"
+    packageName = "SshExtension"
+    packageTitle = "SshExtension"
     packageVersion = version
 }
 

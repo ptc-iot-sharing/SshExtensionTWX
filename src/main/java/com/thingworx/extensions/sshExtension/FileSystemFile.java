@@ -1,4 +1,4 @@
-package com.thingworx.extensions.sftpExtension;
+package com.thingworx.extensions.sshExtension;
 
 import org.joda.time.DateTime;
 

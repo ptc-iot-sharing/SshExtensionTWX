@@ -1,9 +1,9 @@
-package com.thingworx.extensions.sftpExtension;
+package com.thingworx.extensions.sshExtension;
 
 /**
  * Holds the configuration for the underlying ssh connection
  */
-public class SftpConfiguration {
+public class SshConfiguration {
     private String username;
     private String password;
     private String host;
@@ -71,7 +71,7 @@ public class SftpConfiguration {
 
     @Override
     public String toString() {
-        return "SftpConfiguration{" +
+        return "SshConfiguration{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", host='" + host + '\'' +

@@ -1,25 +1,25 @@
 <Entities>
     <ExtensionPackages>
-        <ExtensionPackage name="SftpExtension"
-                          description="SFTP and SCP extension"
+        <ExtensionPackage name="SshExtension"
+                          description="SSH extension"
                           vendor="ThingWorx Customer Service"
                           packageVersion="1.0"
                           minimumThingWorxVersion="5.0.0">
             <JarResources>
-                <FileResource type="JAR" file="thingworx-sftp-extension.jar"
-                              description="HelloWorld ThingPackage JAR"/>
+                <FileResource type="JAR" file="thingworx-ssh-extension.jar"
+                              description="Ssh extension ThingPackage JAR"/>
                 <FileResource type="JAR" file="jsch-0.1.53.jar" description="Pure java ssh implementation"/>
             </JarResources>
         </ExtensionPackage>
     </ExtensionPackages>
     <ThingPackages>
-        <ThingPackage name="SftpRepositoryThing" description="Sftp imap Extension"
-                      className="com.thingworx.extensions.sftpExtension.SftpRepositoryThing" aspect.isSystemObject="false"
+        <ThingPackage name="SshServerThingPackage" description="SSH Extension"
+                      className="com.thingworx.extensions.sshExtension.SshServerThing" aspect.isSystemObject="false"
                       aspect.isCreatable="true"/>
     </ThingPackages>
     <ThingTemplates>
-        <ThingTemplate name="SftpRepositoryTemplate" description="Sftp server example Template"
-                       thingPackage="SftpRepositoryThing"
+        <ThingTemplate name="SshServerTemplate" description="SSH server example Template"
+                       thingPackage="SshServerThingPackage"
                        aspect.isSystemObject="false">
             <avatar/>
         </ThingTemplate>
