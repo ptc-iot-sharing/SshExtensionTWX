@@ -2,7 +2,9 @@ package com.thingworx.extensions.sshExtension;
 
 
 import ch.qos.logback.classic.Logger;
+import com.thingworx.common.utils.StringUtilities;
 import com.thingworx.entities.utils.ThingUtilities;
+import com.thingworx.extensions.sshExtension.jsch.SshServerImpl;
 import com.thingworx.logging.LogUtilities;
 import com.thingworx.metadata.annotations.*;
 import com.thingworx.things.Thing;
@@ -28,7 +30,7 @@ import com.thingworx.things.repository.FileRepositoryThing;
                                 description = "Server port",
                                 baseType = "INTEGER",
                                 aspects = {"defaultValue:22", "friendlyName:SFTP Server Port"}
-                        ),@ThingworxFieldDefinition(
+                        ), @ThingworxFieldDefinition(
                                 ordinal = 2,
                                 name = "username",
                                 description = "Username",
@@ -81,12 +83,11 @@ import com.thingworx.things.repository.FileRepositoryThing;
                                         aspects = {"friendlyName: Private key passphrase"}
                                 )}
                         )
-        )}
+                )}
 )
 public class SshServerThing extends Thing {
     private static Logger LOGGER = LogUtilities.getInstance().getApplicationLogger(SshServerThing.class);
 
-    private ManagedSshServer sshServer;
     private SshConfiguration config = new SshConfiguration();
 
     @Override
@@ -110,7 +111,6 @@ public class SshServerThing extends Thing {
         config.setUsername((String) this.getConfigurationData().getValue("ConnectionInfo", "username"));
         config.setConnectionTimeout((Integer) this.getConfigurationData().getValue("ConnectionInfo", "connectionTimeout"));
         config.setKeepAliveTimeout((Integer) this.getConfigurationData().getValue("ConnectionInfo", "keepAliveTimeout"));
-        sshServer = new ManagedSshServer(config);
         LOGGER.info("Created a sftp thing with config:" + config);
     }
 
@@ -129,7 +129,26 @@ public class SshServerThing extends Thing {
             name = "command",
             description = "Command to execute",
             baseType = "STRING"
-    ) String command) throws Exception {
-        return sshServer.getServer().executeCommand(command);
+    ) String command, @ThingworxServiceParameter(
+            name = "username",
+            description = "Command to execute",
+            baseType = "STRING"
+    ) String username, @ThingworxServiceParameter(
+            name = "password",
+            description = "Command to execute",
+            baseType = "STRING"
+    ) String password) throws Exception {
+        try (SshServer server = new SshServerImpl(config)) {
+            if (StringUtilities.isNonEmpty(username)) {
+                config.setUsername(username);
+            }
+            if (StringUtilities.isNonEmpty(password)) {
+                config.setPassword(password);
+            }
+            return server.executeCommand(command);
+        } catch (SshException ex) {
+            LOGGER.warn("Failed to execute command " + command, ex);
+            throw ex;
+        }
     }
 }
