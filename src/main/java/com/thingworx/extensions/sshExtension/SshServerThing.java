@@ -14,7 +14,7 @@ import com.thingworx.things.repository.FileRepositoryThing;
 @ThingworxConfigurationTableDefinitions(
         tables = {@ThingworxConfigurationTableDefinition(
                 name = "ConnectionInfo",
-                description = "SFTP Server Connection Parameters",
+                description = "SSH Server Connection Parameters",
                 isMultiRow = false,
                 ordinal = 0,
                 dataShape = @ThingworxDataShapeDefinition(
@@ -23,25 +23,25 @@ import com.thingworx.things.repository.FileRepositoryThing;
                                 name = "host",
                                 description = "Server name",
                                 baseType = "STRING",
-                                aspects = {"defaultValue:localhost", "friendlyName:SFTP Server"}
+                                aspects = {"defaultValue:localhost", "friendlyName:SSH Server"}
                         ), @ThingworxFieldDefinition(
                                 ordinal = 1,
                                 name = "port",
                                 description = "Server port",
                                 baseType = "INTEGER",
-                                aspects = {"defaultValue:22", "friendlyName:SFTP Server Port"}
+                                aspects = {"defaultValue:22", "friendlyName:SSH Server Port"}
                         ), @ThingworxFieldDefinition(
                                 ordinal = 2,
                                 name = "username",
                                 description = "Username",
                                 baseType = "STRING",
-                                aspects = {"defaultValue:root", "friendlyName:SFTP User"}
+                                aspects = {"defaultValue:root", "friendlyName:SSH User"}
                         ), @ThingworxFieldDefinition(
                                 ordinal = 3,
                                 name = "password",
                                 description = "Password",
                                 baseType = "PASSWORD",
-                                aspects = {"friendlyName:SFTP Account Password"}
+                                aspects = {"friendlyName:SSH Account Password"}
                         ), @ThingworxFieldDefinition(
                                 ordinal = 6,
                                 name = "connectionTimeout",
@@ -59,7 +59,7 @@ import com.thingworx.things.repository.FileRepositoryThing;
         ),
                 @ThingworxConfigurationTableDefinition(
                         name = "Keybasedauth",
-                        description = "SFTP key based authentication",
+                        description = "SSH key based authentication",
                         isMultiRow = false,
                         ordinal = 1,
                         dataShape = @ThingworxDataShapeDefinition(
@@ -111,19 +111,18 @@ public class SshServerThing extends Thing {
         config.setUsername((String) this.getConfigurationData().getValue("ConnectionInfo", "username"));
         config.setConnectionTimeout((Integer) this.getConfigurationData().getValue("ConnectionInfo", "connectionTimeout"));
         config.setKeepAliveTimeout((Integer) this.getConfigurationData().getValue("ConnectionInfo", "keepAliveTimeout"));
-        LOGGER.info("Created a sftp thing with config:" + config);
+        LOGGER.info("Created a sSH thing with config:" + config);
     }
 
     @ThingworxServiceDefinition(
             name = "ExecuteCommand",
-            description = "Executes a command on the remote filesystem",
+            description = "Executes a command on the remote server",
             category = "Transfers"
     )
     @ThingworxServiceResult(
             name = "result",
-            description = "Browse Results",
-            baseType = "STRING",
-            aspects = {"dataShape:FileSystemFile"}
+            description = "Command Result",
+            baseType = "STRING"
     )
     public String ExecuteCommand(@ThingworxServiceParameter(
             name = "command",
@@ -131,24 +130,46 @@ public class SshServerThing extends Thing {
             baseType = "STRING"
     ) String command, @ThingworxServiceParameter(
             name = "username",
-            description = "Command to execute",
+            description = "Username to use. Null or empty uses the one from the config table",
             baseType = "STRING"
     ) String username, @ThingworxServiceParameter(
             name = "password",
-            description = "Command to execute",
+            description = "Password to use. Null or empty uses the one from the config table",
             baseType = "STRING"
     ) String password) throws Exception {
+        if (StringUtilities.isNonEmpty(username)) {
+            config.setUsername(username);
+        }
+        if (StringUtilities.isNonEmpty(password)) {
+            config.setPassword(password);
+        }
         try (SshServer server = new SshServerImpl(config)) {
-            if (StringUtilities.isNonEmpty(username)) {
-                config.setUsername(username);
-            }
-            if (StringUtilities.isNonEmpty(password)) {
-                config.setPassword(password);
-            }
             return server.executeCommand(command);
         } catch (SshException ex) {
             LOGGER.warn("Failed to execute command " + command, ex);
             throw ex;
         }
+    }
+
+    @ThingworxServiceDefinition(
+            name = "AttemptLogin",
+            description = "Attempts to login on the remote servefr",
+            category = "Transfers"
+    )
+    @ThingworxServiceResult(
+            name = "result",
+            description = "True if the login worked",
+            baseType = "BOOLEAN"
+    )
+    public boolean AttemptLogin(@ThingworxServiceParameter(
+            name = "username",
+            description = "Username to use. Null or empty uses the one from the config table",
+            baseType = "STRING"
+    ) String username, @ThingworxServiceParameter(
+            name = "password",
+            description = "Password to use. Null or empty uses the one from the config table",
+            baseType = "STRING"
+    ) String password) throws Exception {
+        return "1".equals(ExecuteCommand("printf 1", username, password));
     }
 }
