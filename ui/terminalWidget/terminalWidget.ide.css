@@ -1,0 +1,22 @@
+/* var s_idePluginVersion = "10.2.30.38"; */
+.widget-blackbox-helper {
+    background: url(images/helper.png) no-repeat;
+    width: 80px;
+    height: 28px;
+}
+
+.widget-terminal {
+    background-color: #C0C0C0;
+}
+
+.widget-terminal img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    position: absolute;
+    max-height: 40%;
+    max-width: 40%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

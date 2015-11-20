@@ -143,7 +143,7 @@ task prepPackage(dependsOn: jar) {
         // add the ui files
         copy {
             from uiDir
-            into "${buildDir}/zip/ui/common/"
+            into "${buildDir}/zip/ui/"
         }
     }
 }
