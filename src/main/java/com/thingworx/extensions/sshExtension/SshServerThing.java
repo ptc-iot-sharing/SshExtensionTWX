@@ -111,13 +111,13 @@ public class SshServerThing extends Thing {
         config.setUsername((String) this.getConfigurationData().getValue("ConnectionInfo", "username"));
         config.setConnectionTimeout((Integer) this.getConfigurationData().getValue("ConnectionInfo", "connectionTimeout"));
         config.setKeepAliveTimeout((Integer) this.getConfigurationData().getValue("ConnectionInfo", "keepAliveTimeout"));
-        LOGGER.info("Created a sSH thing with config:" + config);
+        LOGGER.info("Created a SSH thing with config:" + config);
     }
 
     @ThingworxServiceDefinition(
             name = "ExecuteCommand",
             description = "Executes a command on the remote server",
-            category = "Transfers"
+            category = "Commands"
     )
     @ThingworxServiceResult(
             name = "result",
@@ -153,8 +153,8 @@ public class SshServerThing extends Thing {
 
     @ThingworxServiceDefinition(
             name = "AttemptLogin",
-            description = "Attempts to login on the remote servefr",
-            category = "Transfers"
+            description = "Attempts to login on the remote server",
+            category = "Commands"
     )
     @ThingworxServiceResult(
             name = "result",

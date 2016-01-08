@@ -16,7 +16,7 @@
 
 TW.IDE.Widgets.terminalWidget = function () {
     this.widgetIconUrl = function () {
-        return "../Common/extensions/terminal-widget/ui/terminalWidget/terminalWidget.ide.png";
+        return "../Common/extensions/SshExtension/ui/terminalWidget/terminalWidget.ide.png";
     };
 
     this.widgetProperties = function () {
@@ -102,7 +102,7 @@ TW.IDE.Widgets.terminalWidget = function () {
     this.renderHtml = function () {
         var html = '';
         html += '<div class="widget-content widget-terminal">';
-        html += '<img src="../Common/extensions/terminal-widget/ui/terminalWidget/terminalWidget.ide.png" />';
+        html += '<img src="../Common/extensions/SshExtension/ui/terminalWidget/terminalWidget.ide.png" />';
         html += '</div>';
         return html;
     };
