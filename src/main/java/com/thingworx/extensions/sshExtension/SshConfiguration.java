@@ -73,7 +73,6 @@ public class SshConfiguration {
     public String toString() {
         return "SshConfiguration{" +
                 "username='" + username + '\'' +
-                ", password='" + password + '\'' +
                 ", host='" + host + '\'' +
                 ", port=" + port +
                 ", passphrase='" + passphrase + '\'' +
