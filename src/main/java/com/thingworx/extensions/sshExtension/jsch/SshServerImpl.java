@@ -35,7 +35,7 @@ public class SshServerImpl implements SshServer {
     @Override
     public String executeCommand(String command) {
         try {
-            String result = "";
+            StringBuilder result = new StringBuilder();
             JSch jSch = new JSch();
             // attempt to load the private key
             if (StringUtilities.isNonEmpty(config.getPrivateKey())) {
@@ -52,13 +52,13 @@ public class SshServerImpl implements SshServer {
             session.setConfig("StrictHostKeyChecking", "no");
             session.setPassword(config.getPassword());
             session.connect(config.getConnectionTimeout());
-            Channel channel = session.openChannel("exec");
-            ((ChannelExec) channel).setCommand(command);
+            channel = (ChannelExec) session.openChannel("exec");
+            channel.setCommand(command);
 
             channel.setInputStream(System.in);
             channel.setInputStream(null);
 
-            ((ChannelExec) channel).setErrStream(System.err);
+            channel.setErrStream(System.err);
 
             InputStream in = channel.getInputStream();
 
@@ -69,11 +69,11 @@ public class SshServerImpl implements SshServer {
                 while (in.available() > 0) {
                     int i = in.read(tmp, 0, 1024);
                     if (i < 0) break;
-                    result += new String(tmp, 0, i);
+                    result.append(new String(tmp, 0, i));
                 }
                 if (channel.isClosed()) {
                     if (in.available() > 0) continue;
-                    System.out.println("exit-status: " + channel.getExitStatus());
+                    LOGGER.debug("For command " +  command + "exit-status: " + channel.getExitStatus());
                     break;
                 }
                 try {
@@ -83,9 +83,9 @@ public class SshServerImpl implements SshServer {
             }
             channel.disconnect();
             session.disconnect();
-            return result;
+            return result.toString();
         } catch (JSchException | IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("Fail while executing command " + command, e);
         }
         return "";
     }

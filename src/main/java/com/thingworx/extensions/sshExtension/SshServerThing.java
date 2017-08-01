@@ -10,10 +10,12 @@ import com.thingworx.metadata.annotations.*;
 import com.thingworx.things.Thing;
 import com.thingworx.things.repository.FileRepositoryThing;
 
+import static com.thingworx.extensions.sshExtension.SshServerThing.CONNECTION_INFO;
+
 
 @ThingworxConfigurationTableDefinitions(
         tables = {@ThingworxConfigurationTableDefinition(
-                name = "ConnectionInfo",
+                name = CONNECTION_INFO,
                 description = "SSH Server Connection Parameters",
                 isMultiRow = false,
                 ordinal = 0,
@@ -86,6 +88,7 @@ import com.thingworx.things.repository.FileRepositoryThing;
                 )}
 )
 public class SshServerThing extends Thing {
+    public static final String CONNECTION_INFO = "ConnectionInfo";
     private static Logger LOGGER = LogUtilities.getInstance().getApplicationLogger(SshServerThing.class);
 
     private SshConfiguration config = new SshConfiguration();
@@ -93,10 +96,10 @@ public class SshServerThing extends Thing {
     @Override
     protected void initializeThing() throws Exception {
         // get values from the configuration table
-        config.setHost((String) this.getConfigurationData().getValue("ConnectionInfo", "host"));
-        config.setPort((Integer) this.getConfigurationData().getValue("ConnectionInfo", "port"));
+        config.setHost((String) this.getConfigurationData().getValue(CONNECTION_INFO, "host"));
+        config.setPort((Integer) this.getConfigurationData().getValue(CONNECTION_INFO, "port"));
         config.setPassphrase((String) this.getConfigurationData().getValue("Keybasedauth", "passphrase"));
-        config.setPassword((String) this.getConfigurationData().getValue("ConnectionInfo", "password"));
+        config.setPassword((String) this.getConfigurationData().getValue(CONNECTION_INFO, "password"));
         String privateKeyFile = (String) this.getConfigurationData().getValue("Keybasedauth", "privateKey");
         String fileRepo = (String) this.getConfigurationData().getValue("Keybasedauth", "sshServer");
         FileRepositoryThing repoThing = (FileRepositoryThing) ThingUtilities.findThing(fileRepo);
@@ -108,9 +111,9 @@ public class SshServerThing extends Thing {
                 LOGGER.warn("cannot load the private key file");
             }
         }
-        config.setUsername((String) this.getConfigurationData().getValue("ConnectionInfo", "username"));
-        config.setConnectionTimeout((Integer) this.getConfigurationData().getValue("ConnectionInfo", "connectionTimeout"));
-        config.setKeepAliveTimeout((Integer) this.getConfigurationData().getValue("ConnectionInfo", "keepAliveTimeout"));
+        config.setUsername((String) this.getConfigurationData().getValue(CONNECTION_INFO, "username"));
+        config.setConnectionTimeout((Integer) this.getConfigurationData().getValue(CONNECTION_INFO, "connectionTimeout"));
+        config.setKeepAliveTimeout((Integer) this.getConfigurationData().getValue(CONNECTION_INFO, "keepAliveTimeout"));
         LOGGER.info("Created a SSH thing with config:" + config);
     }
 
